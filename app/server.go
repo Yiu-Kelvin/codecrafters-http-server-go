@@ -85,7 +85,7 @@ func (r *Response) SendRespond(conn net.Conn) {
 			response_string = response_string + line
 
 		}else{
-			line := fmt.Sprintf("%s %v\r\n",key, val)
+			line := fmt.Sprintf("%s: %v\r\n",key, val)
 			response_string = response_string + line
 		}
 	}
