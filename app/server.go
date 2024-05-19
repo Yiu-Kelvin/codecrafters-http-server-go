@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// Uncomment this block to passddd the first stage
+	// Uncomment this block to pass the first stage
 	"net"
 	"os"
 	"strings"
