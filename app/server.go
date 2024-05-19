@@ -79,6 +79,9 @@ func (r *Response) SendRespond(conn net.Conn) {
 	delete(dict, "Status_code")
 	delete(dict, "Status_string")
 	delete(dict, "Version")
+	if len(dict) == 0{
+		response_string = response_string + "\r\n" 
+	} 
 	for key, val := range dict {
 		if key == "Body"{
 			line := fmt.Sprintf("\r\n%v", val)
