@@ -129,7 +129,7 @@ func main() {
 
 		case strings.Contains(path, "/echo"):
 			path_string := strings.TrimPrefix(path, "/echo/")
-			response.SetRespond(200,"OK",Response{Body: path_string})
+			response.SetRespond(200,"OK",Response{Content_type:"text/plain", Body: path_string})
 		
 		case path == "/user-agent":
 			response.SetRespond(200,"OK",Response{Content_type:"text/plain",Body: r.User_agent})
