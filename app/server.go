@@ -31,9 +31,6 @@ func main() {
 	request := string(buffer)
 	requests := strings.Split(request,"\r\n")
 	path := strings.Fields(requests[0])[1]
-	user_agent := strings.Fields(requests[3])[1]
-	fmt.Println(user_agent)
-	fmt.Println(requests)
 
 	if path == "/"{
 		conn.Write([]byte("HTTP/1.1 200 OK\r\n\r\n"))
@@ -42,6 +39,7 @@ func main() {
 		path_string_len := len([]byte(path_string))
 		conn.Write([]byte(fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", path_string_len, path_string)))
 	}else if strings.HasPrefix(path, "/user-agent"){
+		user_agent := strings.Fields(requests[3])[1]
 		user_agent_len := len([]byte(user_agent))
 		conn.Write([]byte(fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", user_agent_len, user_agent)))
 
