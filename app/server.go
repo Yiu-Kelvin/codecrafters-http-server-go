@@ -68,7 +68,7 @@ func (r *Response) SendRespond(conn net.Conn) {
     if err!= nil {
 		panic(err)
     }
-	dict := make(map[string]interface{})
+	dict := make(map[string]interface{})   
 
     err = json.Unmarshal([]byte(responseData), &dict)
 
@@ -93,33 +93,19 @@ func (r *Response) SendRespond(conn net.Conn) {
 		}
 	}
 	
-	fmt.Printf(fmt.Sprintf(response_string))
 	conn.Write([]byte(response_string))
 }
 
-
-
-func main() {
-
-	l, err := net.Listen("tcp", "0.0.0.0:4221")
-	if err != nil {
-		fmt.Println("Failed to bind to port 4221")
-		os.Exit(1)
-	}
-	
-	conn, err := l.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection: ", err.Error())
-		os.Exit(1)
-	}
+func ProcessConn(conn net.Conn, c chan bool){
 	buffer := make([]byte, 4004)
-	_, err = conn.Read(buffer)
+	_, err := conn.Read(buffer)
 
 	if err != nil {
 		fmt.Println("Error reading connection: ", err.Error())
 		os.Exit(1)
 	}
 	request := string(buffer)
+	fmt.Println("Accepted request")
 	request_lines := strings.Split(request,"\r\n")
 	r := new(Request)
 	r.SetRequest(request_lines)
@@ -130,7 +116,7 @@ func main() {
 		case path == "/":
 			response.SetRespond(200,"OK",Response{})
 
-		case strings.Contains(path, "/echo"):
+		case strings.HasPrefix(path, "/echo"):
 			path_string := strings.TrimPrefix(path, "/echo/")
 			response.SetRespond(200,"OK",Response{Content_type:"text/plain", Body: path_string})
 		
@@ -141,6 +127,27 @@ func main() {
 			response.SetRespond(404,"Not Found",Response{})
 	}
 	response.SendRespond(conn)
+	fmt.Println("Send response")
+}
+
+func main() {
+
+	l, err := net.Listen("tcp", "0.0.0.0:4221")
+	if err != nil {
+		fmt.Println("Failed to bind to port 4221")
+		os.Exit(1)
+	}
+	fmt.Println("listening on port 4221")
+	
+	conn, err := l.Accept()
+	if err != nil {
+		fmt.Println("Error accepting connection: ", err.Error())
+		os.Exit(1)
+	}
+	c := make(chan bool)
+	go ProcessConn(conn, c)
+	<- c
+	
 }
 
 
