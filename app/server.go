@@ -96,7 +96,7 @@ func (r *Response) SendRespond(conn net.Conn) {
 	conn.Write([]byte(response_string))
 }
 
-func ProcessConn(conn net.Conn, c chan bool){
+func ProcessConn(conn net.Conn){
 	buffer := make([]byte, 4004)
 	_, err := conn.Read(buffer)
 
@@ -139,14 +139,16 @@ func main() {
 	}
 	fmt.Println("listening on port 4221")
 	
-	conn, err := l.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection: ", err.Error())
-		os.Exit(1)
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error accepting connection: ", err.Error())
+			os.Exit(1)
+		}
+		go ProcessConn(conn)
+
 	}
-	c := make(chan bool)
-	go ProcessConn(conn, c)
-	<- c
+
 	
 }
 
